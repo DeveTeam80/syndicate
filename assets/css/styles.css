@@ -9,6 +9,7 @@ body {
     color: #E3D8CE; /* Beige/Off-white */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 /* Custom font utility class for specific paragraphs */
