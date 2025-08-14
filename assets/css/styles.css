@@ -15,6 +15,9 @@ body {
 .font-ibm-plex {
     font-family: 'IBM Plex Sans', sans-serif;
 }
+.font-sans {
+  font-family: 'Montserrat', sans-serif !important;
+}
 
 /* ---------- Component-specific overrides ---------- */
 
@@ -50,7 +53,6 @@ body {
 }
 
 .service-item {
-  /* Default (collapsed) state: all items share space equally */
   flex: 1; /* This is the key property for equal distribution */
   overflow: hidden;
   /* Animate the change in size */
@@ -58,10 +60,8 @@ body {
 }
 
 .service-item.active {
-  /* Expanded state: this item grows significantly larger */
-  flex: 8; /* This ratio determines how big the expanded item is. Adjust if needed. */
+  flex: 8;
 }
-/* Add this new class to your CSS file */
 
 .full-bleed {
   width: 100vw;
@@ -70,4 +70,50 @@ body {
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+}
+.service-item {
+    transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+}
+
+.service-item .collapsed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.5s ease-out, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.service-item .collapsed.hidden {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    transition-delay: 0.1s;
+}
+
+.service-item .expanded {
+    opacity: 0;
+    transform: translateY(25px) scale(0.95);
+    transition: opacity 0.8s ease-out, transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.service-item .expanded.flex {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.3s; /* Longer delay for more dramatic effect */
+}
+
+.service-item.active {
+    flex-grow: 8;
+    transition-duration: 1.4s; /* Very slow width expansion */
+}
+.service-item .expanded p {
+    opacity: 0;
+    transform: translateX(-50px) rotate(-2deg);
+    transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.6s;
+    filter: blur(3px);
+}
+
+.service-item .expanded.flex p {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+    filter: blur(0px);
+    transition-delay: 0.8s; /* Appears after other content */
 }

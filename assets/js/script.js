@@ -1,20 +1,39 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // ---------- About slider (Swiper) Initialization ----------
-    const aboutSwiper = new Swiper('.about-swiper', {
-        direction: 'vertical',
-        autoplay: {
-            delay: 10000,
-            disableOnInteraction: true
-        },
-        slidesPerView: 1,
-        mousewheel: {
-            releaseOnEdges: true,
-            thresholdTime: 1000,
+    const swiperContainer = document.querySelector('.about-swiper');
+    if (swiperContainer) {
+        const aboutSwiper = new Swiper(swiperContainer, {
+            direction: 'vertical',
+            loop: false, 
+            slidesPerView: 1,
 
-        },
-    });
+            autoplay: {
+                stopOnLastSlide: true,
+                // disableOnInteraction: true,
+            },
 
+            mousewheel: {
+                releaseOnEdges: true,
+                thresholdTime: 1000,
+            },
+        });
+
+        // --- Intersection Observer Logic ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (!aboutSwiper.isEnd) {
+                        aboutSwiper.autoplay.start();
+                    }
+                } else {
+                    aboutSwiper.autoplay.stop();
+                }
+            });
+        });
+
+        observer.observe(swiperContainer);
+    }
 
     const nextTriggers = document.querySelectorAll('.next-slide-trigger');
 
@@ -49,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="flex items-end transform -rotate-90 ">
                             <span class="text-4xl md:text-6xl font-extrabold text-[#E3D8CE] opacity-90">${srv.number}</span>
                             <div class="ml-4 w-96">
-                                <span class="uppercase font-semibold text-base md:text-3xl text-[#E3D8CE]">${srv.title}</span>
+                                <span class="font-bold text-base md:text-3xl text-[#E3D8CE]">${srv.title}</span>
                             </div>
                         </div>
                     </div>
@@ -58,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="flex items-end transform -rotate-90 ">
                                 <span class="text-6xl font-extrabold">${srv.number}</span>
                                 <div class="ml-4 w-96">
-                                    <span class="uppercase font-semibold text-3xl">${srv.title}</span>
+                                    <span class=" font-bold text-3xl">${srv.title}</span>
                                 </div>
                             </div>
                         </div>
