@@ -5,8 +5,8 @@
 /* ---------- Global Styles ---------- */
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #1C2E5D; /* Dark Blue */
-    color: #E3D8CE; /* Beige/Off-white */
+    background-color: #1C2E5D;
+    color: #E3D8CE;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
@@ -16,105 +16,236 @@ body {
 .font-ibm-plex {
     font-family: 'IBM Plex Sans', sans-serif;
 }
+
 .font-sans {
-  font-family: 'Montserrat', sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
-/* ---------- Component-specific overrides ---------- */
 
 /* Ensure banner text remains pure white */
 .banner-text h1 {
     color: #FFFFFF;
 }
 
-/* Responsive fix for the "About" slider.
-  Using aspect-ratio provides a consistent shape across different screen widths.
-  Height is allowed to be auto on mobile where slides stack vertically.
-*/
 .about-swiper {
-    height: 70vh; /* Set height relative to viewport height */
-    min-height: 500px; /* Minimum height */
-    max-height: 700px; /* Maximum height */
+    height: 70vh;
+    min-height: 500px;
+    max-height: 800px;
+    /* Increased max-height slightly for larger screens */
 }
 
-@media (max-width: 1023px) { /* Below lg breakpoint */
-    .about-swiper {
-        height: auto; /* Allow height to be determined by content */
-    }
-    .about-swiper .swiper-slide {
-        height: auto;
-    }
+/* Add swiper pagination styles */
+.about-swiper .swiper-pagination {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    /* Hidden by default, shown on mobile */
 }
+
+.about-swiper .swiper-pagination-bullet {
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 10px;
+    height: 10px;
+    opacity: 0.8;
+}
+
+.about-swiper .swiper-pagination-bullet-active {
+    background-color: #FFFFFF;
+}
+
 /* --- Styles for the "Our Services" Accordion --- */
-
 .services-container {
-  display: flex;
-  width: 100%;
-  height: 600px; 
+    display: flex;
+    width: 100%;
+    height: 600px;
 }
 
-.service-item {
-  flex: 1; /* This is the key property for equal distribution */
-  overflow: hidden;
-  /* Animate the change in size */
-  transition: flex 0.7s ease-in-out;
+.service-item:last-child {
+    border-right: none;
 }
 
 .service-item.active {
-  flex: 8;
+    flex: 8;
+    transition: flex 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.full-bleed {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+.service-item .collapsed .rotated-text {
+    flex-shrink: 0;
+    /* Prevents text from shrinking on flex layouts */
 }
+
+
+.full-bleed {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+/* --- Smooth Animations for Services Accordion --- */
 .service-item {
-    transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    flex: 1;
     overflow: hidden;
+    transition: flex 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-right: 1px solid #E3D8CE;
+}
+
+.service-item.active {
+    flex: 8;
 }
 
 .service-item .collapsed {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    transition: opacity 0.5s ease-out, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(0);
+    transition: opacity 0.3s ease-out;
 }
 
 .service-item .collapsed.hidden {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-    transition-delay: 0.1s;
+    transform: translateY(-15px);
+    transition: opacity 0.2s ease-out;
 }
 
 .service-item .expanded {
-    opacity: 0;
-    transform: translateY(25px) scale(0.95);
-    transition: opacity 0.8s ease-out, transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: none;
 }
 
 .service-item .expanded.flex {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 0.3s; /* Longer delay for more dramatic effect */
+    display: flex;
 }
 
-.service-item.active {
-    flex-grow: 8;
-    transition-duration: 1.4s; /* Very slow width expansion */
-}
-.service-item .expanded p {
+.service-item .expanded .image-content {
     opacity: 0;
-    transform: translateX(-50px) rotate(-2deg);
-    transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.6s;
-    filter: blur(3px);
+    transform: scale(0.8);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-.service-item .expanded.flex p {
+.service-item .expanded .text-content {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.service-item .expanded.show-image .image-content {
     opacity: 1;
-    transform: translateX(0) rotate(0deg);
-    filter: blur(0px);
-    transition-delay: 0.8s; /* Appears after other content */
+    transform: scale(1);
+}
+
+.service-item .expanded.show-text .text-content {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.service-item .expanded .left-panel {
+    opacity: 1;
+    transition: none;
+}
+
+.service-item .expanded p {
+    transition: none;
+}
+
+/* =========================================== */
+/* ---------- MOBILE OPTIMISATIONS ----------- */
+/* =========================================== */
+@media (max-width: 1023px) {
+    /* Below lg breakpoint */
+
+
+    .about-swiper {
+        height: auto;
+        /* Allow height to be determined by content */
+        max-height: none;
+    }
+
+    .about-swiper .swiper-slide {
+        height: auto;
+    }
+
+    .about-swiper .swiper-pagination {
+        display: block;
+        /* Show pagination on mobile */
+    }
+
+    /* --- MOBILE STYLES for the "Our Services" Accordion --- */
+    .services-container {
+        display: block;
+        /* Stack items vertically */
+        height: auto;
+    }
+
+    .service-item,
+    .service-item.active {
+        flex: 1 1 auto;
+        /* Reset flex properties */
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #E3D8CE;
+    }
+
+    .service-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Adjust collapsed view for mobile */
+    .service-item .collapsed {
+        justify-content: flex-start;
+        padding: 1rem;
+    }
+
+    .service-item .collapsed .rotated-text {
+        transform: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .service-item .collapsed .title-container {
+        width: auto;
+        margin-left: 0;
+    }
+
+
+    .service-item .expanded {
+        flex-direction: column;
+    }
+
+    .service-item .expanded .left-panel {
+        transform: none;
+        display: flex;
+        align-items: center !important;
+        gap: 1rem;
+        width: 100%;
+        justify-content: flex-start;
+        padding: 1rem;
+
+        margin-left: 0;
+        margin-right: 0;
+
+    }
+
+    /* This new rule forcefully rotates the inner content */
+
+    .service-item .expanded .right-panel {
+        flex-direction: column;
+        padding: 1.5rem;
+        /* p-6 */
+    }
+
+    .service-item .expanded .text-content {
+        width: 100%;
+        padding-right: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-item .expanded .image-content {
+        width: 100%;
+    }
+
+
 }

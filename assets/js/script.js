@@ -1,48 +1,80 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ---------- About slider (Swiper) Initialization ----------
-    const swiperContainer = document.querySelector('.about-swiper');
-    if (swiperContainer) {
-        const aboutSwiper = new Swiper(swiperContainer, {
-            direction: 'vertical',
-            loop: false, 
-            slidesPerView: 1,
+    let aboutSwiper;
 
-            autoplay: {
-                stopOnLastSlide: true,
-                // disableOnInteraction: true,
-            },
+    function handleSwiper() {
+        const isDesktop = window.innerWidth >= 1024; // lg breakpoint
 
-            mousewheel: {
-                releaseOnEdges: true,
-                thresholdTime: 1000,
-            },
-        });
-
-        // --- Intersection Observer Logic ---
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (!aboutSwiper.isEnd) {
-                        aboutSwiper.autoplay.start();
-                    }
-                } else {
-                    aboutSwiper.autoplay.stop();
-                }
+        if (isDesktop) {
+            if (aboutSwiper) {
+                aboutSwiper.destroy(true, true);
+            }
+            aboutSwiper = new Swiper('.about-swiper', {
+                direction: 'vertical',
+                loop: false,
+                slidesPerView: 1,
+                mousewheel: {
+                    releaseOnEdges: true,
+                    thresholdTime: 1000,
+                },
             });
-        });
 
-        observer.observe(swiperContainer);
+            // Intersection Observer for desktop autoplay
+            const swiperContainer = document.querySelector('.about-swiper');
+            if (swiperContainer) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            if (!aboutSwiper.isEnd) {
+                                // No autoplay for desktop, manual scroll only
+                            }
+                        } else {
+                            // No autoplay for desktop
+                        }
+                    });
+                });
+                observer.observe(swiperContainer);
+            }
+
+        } else { // Mobile view
+            if (aboutSwiper) {
+                aboutSwiper.destroy(true, true);
+            }
+            aboutSwiper = new Swiper('.about-swiper', {
+                direction: 'horizontal',
+                loop: false,
+                slidesPerView: 1,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+        }
     }
 
-    const nextTriggers = document.querySelectorAll('.next-slide-trigger');
+    // Initial setup
+    handleSwiper();
 
+    // Re-run on resize, with a debounce to avoid performance issues
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(handleSwiper, 250);
+    });
+
+
+    // Next slide triggers
+    const nextTriggers = document.querySelectorAll('.next-slide-trigger');
     nextTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
-            aboutSwiper.slideNext();
+            if (aboutSwiper) {
+                aboutSwiper.slideNext();
+            }
         });
     });
-    // --- "Our Services" Accordion Logic (CSS-based) ---
+
+
+    // --- "Our Services" Accordion Logic ---
     const servicesWrapper = document.getElementById("servicesWrapper");
 
     if (servicesWrapper) {
@@ -60,32 +92,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let activeServiceIndex = -1;
 
-        // Generate the HTML without inline style for width
+        // Generate the HTML for services
         services.forEach((srv, i) => {
             servicesWrapper.innerHTML += `
-                <div class="service-item cursor-pointer flex flex-col justify-center items-center bg-[#1C2E5D] border-r border-[#E3D8CE] last:border-none" data-index="${i}">
+                <div class="service-item cursor-pointer flex flex-col justify-center items-center bg-[#1C2E5D]" data-index="${i}">
                     <div class="collapsed flex items-center justify-center h-full w-full overflow-hidden p-4">
-                        <div class="flex items-end transform -rotate-90 ">
-                            <span class="text-4xl md:text-6xl font-extrabold text-[#E3D8CE] opacity-90">${srv.number}</span>
-                            <div class="ml-4 w-96">
-                                <span class="font-bold text-base md:text-3xl text-[#E3D8CE]">${srv.title}</span>
+                        <div class="rotated-text flex items-center transform lg:-rotate-90">
+                            <span class="number text-4xl md:text-6xl font-extrabold text-[#E3D8CE] opacity-90">${srv.number}</span>
+                            <div class="title-container ml-4 w-96">
+                                <span class="title font-bold text-base md:text-3xl text-[#E3D8CE]">${srv.title}</span>
                             </div>
                         </div>
                     </div>
                     <div class="expanded hidden w-full h-full">
-                        <div class="flex-none w-28 flex items-center justify-center bg-[#1C2E5D] text-[#E3D8CE] border-r border-[#E3D8CE]">
-                            <div class="flex items-end transform -rotate-90 ">
-                                <span class="text-6xl font-extrabold">${srv.number}</span>
+                        <div class="left-panel flex-none w-20 lg:flex items-center justify-center bg-[#1C2E5D] text-[#E3D8CE] border-r border-[#E3D8CE]">
+                            <div class="rotated-text flex items-center transform lg:-rotate-90">
+                                <span class="text-4xl md:text-6xl font-extrabold">${srv.number}</span>
                                 <div class="ml-4 w-96">
-                                    <span class=" font-bold text-3xl">${srv.title}</span>
+                                    <span class="title font-bold text-base md:text-3xl">${srv.title}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-1 flex flex-col md:flex-row items-center p-6 md:p-12 bg-[#E3D8CE] text-slate-800">
-                            <div class="w-full md:w-1/2 md:pr-10 mb-6 md:mb-0">
+                        <div class="right-panel flex-1 flex flex-col md:flex-row items-center p-6 md:p-12 bg-[#E3D8CE] text-slate-800">
+                            <div class="text-content w-full md:w-1/2 md:pr-10 mb-6 md:mb-0">
                                 <p class="text-xl lg:text-2xl font-light italic leading-relaxed text-[#1C2E5D] font-ibm-plex">${srv.description}</p>
                             </div>
-                            <div class="w-full md:w-1/2">
+                            <div class="image-content w-full md:w-1/2">
                                 <img src="${srv.image}" alt="${srv.title}" class="w-full h-auto max-h-[400px] object-contain rounded-md" />
                             </div>
                         </div>
@@ -100,8 +132,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 const isNowActive = i === activeIndex;
                 item.classList.toggle('active', isNowActive);
                 item.querySelector(".collapsed").classList.toggle('hidden', isNowActive);
-                item.querySelector(".expanded").classList.toggle('hidden', !isNowActive);
-                item.querySelector(".expanded").classList.toggle('flex', isNowActive);
+
+                const expandedView = item.querySelector(".expanded");
+                if (isNowActive) {
+                    expandedView.classList.remove('hidden');
+                    expandedView.classList.add('flex');
+
+                    // Step 1: Show the expanded structure (left panel visible, content hidden)
+                    // Step 2: After flex animation, show image first
+                    setTimeout(() => {
+                        expandedView.classList.add('show-image');
+                    }, 800); // After flex expansion (0.8s)
+
+                    // Step 3: Then show text content
+                    setTimeout(() => {
+                        expandedView.classList.add('show-text');
+                    }, 1300); // After flex + image animation (0.8s + 0.5s)
+
+                } else {
+                    expandedView.classList.remove('show-image', 'show-text');
+                    expandedView.classList.add('hidden');
+                    expandedView.classList.remove('flex');
+                }
             });
             activeServiceIndex = activeIndex;
         }
