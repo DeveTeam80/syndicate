@@ -142,12 +142,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Step 2: After flex animation, show image first
                     setTimeout(() => {
                         expandedView.classList.add('show-image');
-                    }, 800); // After flex expansion (0.8s)
+                    }, 200); // After flex expansion (0.2s)
 
                     // Step 3: Then show text content
                     setTimeout(() => {
                         expandedView.classList.add('show-text');
-                    }, 1300); // After flex + image animation (0.8s + 0.5s)
+                    }, 500); // After flex + image animation (0.2s + 0.5s)
 
                 } else {
                     expandedView.classList.remove('show-image', 'show-text');
